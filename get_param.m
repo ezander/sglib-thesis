@@ -1,4 +1,4 @@
-function value=get_param(name, default)
+function value=get_param(name, default, ws)
 % GET_PARAM Short description of get_param.
 %   GET_PARAM Long description of get_param.
 %
@@ -18,8 +18,12 @@ function value=get_param(name, default)
 %   received a copy of the GNU General Public License along with this
 %   program.  If not, see <http://www.gnu.org/licenses/>.
 
+if nargin<3
+    ws='caller';
+end
+
 try
-    value=evalin( 'caller', name );
+    value=evalin( ws, name );
 catch
     value=default;
 end
