@@ -26,11 +26,14 @@ function startup
 % We do the real startup in a file with a special name (SGLIB_STARTUP) so
 % the user can run it individually without any startup on the path
 % interfering with this one
-run( fullfile( '..', 'sglib_startup' ) );
+run( fullfile( 'sglib', 'sglib_startup' ) );
 
-addpath( fullfile( '..', 'paramstudy' ) );
+%addpath( fullfile( '..', 'paramstudy' ) );
 
 dbstop if error
 
 global sglib_figdir
-sglib_figdir='/home/ezander/projects/docs/stochastics/thesis/figures/'
+sglib_figdir='/home/ezander/projects/docs/stochastics/thesis/figures/';
+
+fprintf('sglib_figdir set to: %s\n\n', sglib_figdir);
+
