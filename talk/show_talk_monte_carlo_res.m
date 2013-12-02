@@ -26,11 +26,11 @@ x=[0.5, -0.4; 0.9, -0.9; 0.2, 0.5]';
 
 
 P=point_projector( pos, els, x );
-[u_P_mean, u_P_var]=pce_moments( P'*u_i_alpha, I_u );
+[u_P_mean, u_P_var]=pce_moments( P*u_i_alpha, I_u );
 [u_P_mean, sqrt(u_P_var)]
 m_u=size(I_u,2);
 xi=randn(m_u,10000);
-xv=pce_field_realization( P'*u_i_alpha, I_u, xi );
+xv=pce_field_realization( P*u_i_alpha, I_u, xi );
 [mean(xv,2), std(xv,[], 2)]
 
 % plot solutions fields and difference
