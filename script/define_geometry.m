@@ -2,35 +2,33 @@
 geom=get_base_param( 'geom', '' );
 if isempty(geom)
     N=get_base_param( 'N', 50 );
-    [pos,els,bnd_nodes]=create_mesh_1d( 0, 1, N );
-    G_N=mass_matrix( pos, els );
-    stiffness_func={@stiffness_matrix, {pos, els}, {1,2}};
+    [pos_s,els_s]=create_mesh_1d( 0, 1, N );
+    mass_func=@mass_matrix;
+    bare_stiffness_func=@stiffness_matrix;
 else
     num_refine=get_base_param( 'num_refine', 1 );
-    num_refine_after=get_base_param( 'num_refine_after', 0 );
     show_mesh=get_base_param( 'show_mesh', false );
-    if num_refine_after==0
-        [pos,els,G_N,ptdata]=load_pdetool_geom( geom, 'numrefine', num_refine, 'showmesh', show_mesh );
-        pos_s=pos;
-        els_s=els;
-        G_N_s=G_N;
-        P_s=speye(size(pos_s,2));
-    else
-        [pos,els,G_N,ptdata]=load_pdetool_geom( geom, 'numrefine', num_refine+num_refine_after, 'showmesh', show_mesh );
-        [pos_s,els_s,G_N_s,ptdata_s]=load_pdetool_geom( geom, 'numrefine', num_refine );
-        % this could go much much faster
-        strvarexpand( 'computing mesh projector: $size(pos_s,2)$=>$size(pos,2)$' );
-        P_s=point_projector( pos_s, els_s, pos )';
+    [pos_s,els_s]=load_pdetool_geom( geom, 'numrefine', num_refine);
+    if show_mesh
+        % foo
     end
-    bnd_nodes=find_boundary( els, true );
-    stiffness_func={@pdetool_stiffness_matrix, {ptdata}, {1}};
+    mass_func=@pdetool_mass_matrix;
+    bare_stiffness_func=@pdetool_stiffness_matrix;
 end
-if ~exist( 'pos_s', 'var' )
-    pos_s=pos;
-    els_s=els;
-    G_N_s=G_N;
-    P_s=speye(size(pos_s,2));
+
+num_refine_after=get_base_param( 'num_refine_after', 0 );
+P_s=speye(size(pos_s,2));
+pos=pos_s;
+els=els_s;
+for i=1:num_refine_after
+    [pos, els, P]=refine_mesh(pos, els);
+    P_s = P * P_s;
 end
+
+G_N_s=mass_func( pos_s, els_s );
+G_N=mass_func( pos, els );
+bnd_nodes=find_boundary( els, true );
+stiffness_func={bare_stiffness_func, {pos, els}, {1, 2}};
 
 [d,N]=size(pos);
 

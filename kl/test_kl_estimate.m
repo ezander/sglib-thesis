@@ -4,7 +4,8 @@
 geom='lshape';
 num_refine=2;
 show_mesh=false;
-[pos,els,G_N,ptdata]=load_pdetool_geom( geom, 'numrefine', num_refine, 'showmesh', show_mesh );
+[pos,els]=load_pdetool_geom( geom, 'numrefine', num_refine, 'showmesh', show_mesh );
+G_N=pdetool_mass_matrix(pos, els);
 [d,N]=size(pos);
 
 multiplot_init(2,2);

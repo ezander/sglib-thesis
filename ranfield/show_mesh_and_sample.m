@@ -1,4 +1,4 @@
-function show_mesh_and_samples
+function show_mesh_and_sample
 
 model_large_easy
 define_geometry
