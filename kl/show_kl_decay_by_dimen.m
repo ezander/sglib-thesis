@@ -22,14 +22,14 @@ for fun=1:length(cov_funs)
         n=100;
         sigma=sigma_all(1:n);
         is=1:n;
-        multiplot( mh, 1, fun);
+        multiplot( 1, fun);
         semilogy(is, sigma/sigma(1)); grid on;
         %subplot( 3, 3, d+3); plot(log(is), log(-log(sigma/sigma(1)))); axis equal; grid on
         
-        multiplot( mh, 2, fun);
+        multiplot( 2, fun);
         plot(log(is), log(sigma/sigma(1))); grid on;
         
-        multiplot( mh, 3, fun);
+        multiplot( 3, fun);
         semilogy(is, kl_remainder(sigma_all,n)); grid on;
     end
 end

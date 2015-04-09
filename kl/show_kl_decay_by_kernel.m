@@ -4,7 +4,8 @@ mh=multiplot_init( 3, 4);
 
 
 m=50;
-[pos,els,G_N]=load_pdetool_geom( 'lshape', 'numrefine', 1 ); %#ok<ASGLU>
+[pos,els]=load_pdetool_geom( 'lshape', 'numrefine', 1 ); %#ok<ASGLU>
+G_N=pdetool_mass_matrix(pos, els);
 x=linspace(-4,4,201);
 funcs={@gaussian_covariance, @exponential_covariance, @spherical_covariance};
 lc_fs=[5, 2, 1, 0.5, 0.2];
@@ -17,16 +18,14 @@ for i=1:length(funcs)
         [v_f,sigma]=kl_solve_evp( covariance_matrix( pos, cov_func ), G_N, m ); %#ok<ASGLU>
         y=funcall( cov_func, x, [] );
         
-        multiplot( mh, i, 1 ); plot(x,y);
-        multiplot( mh, i, 2 ); plot(sigma);
-        multiplot( mh, i, 3 ); plot(sigma); logaxis( gca, 'x' );
-        multiplot( mh, i, 4 ); plot(sigma); logaxis( gca, 'xy' );
+        multiplot( i, 1 ); plot(x,y);
+        multiplot( i, 2 ); plot(sigma);
+        multiplot( i, 3 ); plot(sigma); logaxis( gca, 'x' );
+        multiplot( i, 4 ); plot(sigma); logaxis( gca, 'xy' );
     end
-    multiplot_legend( mh, i, 1, lc_fs, 'format', 'l_c=%3.1f' );
-    multiplot_legend( mh, i, 2, lc_fs, 'format', 'l_c=%3.1f' );
-    multiplot_legend( mh, i, 3, lc_fs, 'format', 'l_c=%3.1f' );
-    multiplot_legend( mh, i, 4, lc_fs, 'format', 'l_c=%3.1f' );
-    
+    for k=1:4
+        multiplot(i, k); legend_parametric('l_c=%3.1f', lc_fs);
+    end
     drawnow;
 end
 
